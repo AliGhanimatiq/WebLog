@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, flash
 from flask_login import  login_required, current_user #restricting user to access home page without logging in
+from .models import Post
+from . import db
 
 views = Blueprint("views", __name__)
  
@@ -15,11 +17,14 @@ def home():
 @login_required
 def create_post():
     if request.method == "POST":
-        test=request.form.get('text')
+        text = request.form.get('text')
 
         if not text:
             flash('post cannot be empty', category='error')
         else:
+            post = Post(text=text, author=current_user.id)
+            db.session.add(post)
+            db.session.commit()
             flash("post created!", category='success')
 
     return render_template('create_post.html', user=current_user)
