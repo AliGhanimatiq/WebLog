@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash
+from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import  login_required, current_user #restricting user to access home page without logging in
 from .models import Post
 from . import db
@@ -26,5 +26,6 @@ def create_post():
             db.session.add(post)
             db.session.commit()
             flash("post created!", category='success')
+            return redirect(url_for('views.home'))    
 
     return render_template('create_post.html', user=current_user)
